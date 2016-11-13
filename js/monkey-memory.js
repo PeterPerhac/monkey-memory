@@ -109,7 +109,7 @@ var levels = [
         message: "Tap numbers in ascending order",
         subMessage: "Timer starts as soon as you press the button"
     },
-    // {button: 1, numbers: 4, hidingNumbers: false},
+    {button: 1, numbers: 4, hidingNumbers: false},
     // {button: 1, numbers: 5, hidingNumbers: false},
     // {button: 1, numbers: 6, hidingNumbers: false},
     // {button: 1, numbers: 7, hidingNumbers: false},
@@ -118,14 +118,14 @@ var levels = [
     // {button: 1, numbers: 8, hidingNumbers: false},
     // {button: 1, numbers: 9, hidingNumbers: false},
     // {button: 1, numbers: 9, hidingNumbers: false},
-    // {
-    //     button: 2,
-    //     numbers: 3,
-    //     hidingNumbers: true,
-    //     message: "Take a good look before tapping the first number",
-    //     subMessage: "After pressing the first number, the rest will be \"cloaked\""
-    // },
-    // {button: 3, numbers: 4, hidingNumbers: true},
+    {
+        button: 2,
+        numbers: 3,
+        hidingNumbers: true,
+        message: "Take a good look before tapping the first number",
+        subMessage: "After pressing the first number, the rest will be \"cloaked\""
+    },
+    {button: 3, numbers: 4, hidingNumbers: true},
     // {button: 3, numbers: 5, hidingNumbers: true},
     // {button: 3, numbers: 6, hidingNumbers: true},
     // {button: 3, numbers: 7, hidingNumbers: true},
