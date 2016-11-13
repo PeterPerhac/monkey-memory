@@ -1,15 +1,108 @@
+var renderer = PIXI.autoDetectRenderer();
+document.body.appendChild(renderer.view);
+
+// this works in conjunction with the * css style that sets all padding to 0
+renderer.view.style.position = "absolute";
+renderer.view.style.display = "block";
+
+renderer.autoResize = true;
+renderer.resize(window.innerWidth, window.innerHeight);
+
+PIXI.loader
+    .add("assets/images/monkey.png")
+    .load(setup);
+
+var coin = new Howl({
+    src: ['assets/sounds/coin.wav']
+});
+
+function setup() {
+    var stage = new PIXI.Container();
+
+    var btn = buttons[levels[0].button];
+    var circle = new PIXI.Graphics();
+    circle.beginFill(btn.color);
+
+    // TODO these two values need looking into
+    circle.drawCircle(100, 100, btn.radius);
+    circle.endFill();
+
+    var btnStart = new PIXI.Sprite(circle.generateTexture());
+    btnStart.interactive = true;
+    btnStart.anchor.x = 0.5;
+    btnStart.anchor.y = 0.5;
+    btnStart.on('click', function () {
+        coin.play();
+    });
+    btnStart.on('tap', function () {
+        coin.play();
+    });
+    btnStart.position.x = (renderer.width / 2);
+    btnStart.position.y = (renderer.height / 2);
+    stage.addChild(btnStart);
+
+    var buttonLabelStyle = {
+        fontFamily: "Tahoma, sans-serif",
+        fontSize: "24px",
+        fill: "#fff",
+        stroke: "#000",
+        strokeThickness: 5
+    };
+    var buttonLabel = new PIXI.Text(btn.label, buttonLabelStyle);
+    buttonLabel.anchor.x = 0.5;
+    buttonLabel.anchor.y = 0.5;
+    btnStart.addChild(buttonLabel);
+
+    var messageStyle = {
+        fontFamily: "Tahoma, sans-serif",
+        fontSize: "26px",
+        fill: "#000080",
+        stroke: "#fff",
+        strokeThickness: 5
+    };
+    var message = new PIXI.Text(levels[0].message, messageStyle);
+    message.anchor.x = 0.5;
+    message.anchor.y = 0.5;
+    message.x = (renderer.width / 2);
+    message.y = (renderer.height / 2) + buttons[0].radius * 2;
+
+    var subMessageStyle = {
+        fontFamily: "Tahoma, sans-serif",
+        fontSize: "20px",
+        fill: "#cc00ff",
+        stroke: "#0ff",
+        strokeThickness: 3
+    };
+    var subMessage = new PIXI.Text(levels[0].subMessage, subMessageStyle);
+    subMessage.anchor.x = 0.5;
+    subMessage.anchor.y = 0.5;
+    subMessage.x = (renderer.width / 2);
+    subMessage.y = (renderer.height / 2) + buttons[0].radius * 2 + 50;
+
+    stage.addChild(btnStart);
+    stage.addChild(message);
+    stage.addChild(subMessage);
+
+    renderer.render(stage);
+}
+
+// window.onresize = function () {
+//     renderer.resize(window.innerWidth, window.innerHeight);
+// };
+
+
 var buttons = [
     // 0 - start the whole thing
-    {color: '#beef00', label: 'Start', diameter: 150},
+    {color: 0xBEEF00, label: 'Start', radius: 100},
     // 1 - continue in the first part of the game
-    {color: '#beef00', label: 'Next', diameter: 100},
+    {color: 0xBEEF00, label: 'Next', radius: 75},
     // 2 - start the second part of the game
-    {color: '#00beef', label: 'Proceed', diameter: 150},
+    {color: 0xBEEF00, label: 'Proceed', radius: 100},
     // 3 - continue in the second part of the game
-    {color: '#00beef', label: 'Next', diameter: 100},
+    {color: 0xBEEF00, label: 'Next', radius: 75},
     // 4 - end of game => show me the results
-    {color: '#cccc00', label: 'Results', diameter: 200}
-]
+    {color: 0xBEEF00, label: 'Results', radius: 150}
+];
 
 var levels = [
     {
@@ -51,99 +144,5 @@ var levels = [
         message: "Well done.",
         subMessage: "Press the button to review your results"
     }
-]
+];
 
-
-/**
- * rendering stuff goes here, graphics
- */
-
-var renderer = PIXI.autoDetectRenderer();
-document.body.appendChild(renderer.view);
-renderer.view.style.position = "absolute";
-renderer.view.style.display = "block";
-renderer.autoResize = true;
-renderer.resize(window.innerWidth, window.innerHeight);
-
-PIXI.loader
-    .add("assets/images/monkey.png")
-    .load(setup);
-
-var coin = new Howl({
-    src: ['assets/sounds/coin.wav']
-});
-
-function setup() {
-    var stage = new PIXI.Container();
-    var button = new PIXI.Sprite(
-        PIXI.loader.resources["assets/images/monkey.png"].texture
-    );
-    button.interactive = true;
-    button.anchor.x = 0.5;
-    button.anchor.y = 0.5;
-    button.on('mousedown', onDown);
-    button.on('touchstart', onDown);
-    button.position.x = (renderer.width / 2);
-    button.position.y = (renderer.height / 2);
-
-
-    var messageStyle = {
-        fontFamily: 'Tahoma',
-        fontSize: '28px',
-        fontWeight: 'bold',
-        fill: '#00beef',
-        stroke: '#4a1850',
-        strokeThickness: 5,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 6,
-        wordWrap: true,
-        wordWrapWidth: 600
-    };
-
-    var subMessageStyle = {
-        fontFamily: 'Tahoma',
-        fontSize: '22px',
-        fontStyle: 'italic',
-        fill: '#F7EDCA',
-        stroke: '#4a1850',
-        strokeThickness: 5,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 6,
-        wordWrap: true,
-        wordWrapWidth: 440
-    };
-
-    var message = new PIXI.Text(levels[0].message, messageStyle);
-    message.anchor.x = 0.5;
-    message.anchor.y = 0.5;
-    message.x = (renderer.width / 2);
-    message.y = (renderer.height / 2) + buttons[0].diameter
-
-    stage.addChild(button);
-    stage.addChild(message)
-    requestAnimationFrame(animate);
-
-    MAX_SCALE = 0.25;
-    var angle = 0.00;
-
-    function animate() {
-        angle = angle + 0.04;
-        var sin = Math.sin(angle);
-        button.scale.x = 1.00 + MAX_SCALE * sin;
-        button.scale.y = 1.00 + MAX_SCALE * sin;
-        renderer.render(stage);
-        requestAnimationFrame(animate);
-    }
-
-    function onDown() {
-        coin.play();
-    }
-}
-
-window.onresize = function () {
-    renderer.resize(window.innerWidth, window.innerHeight);
-}
