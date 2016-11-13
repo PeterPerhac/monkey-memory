@@ -9,33 +9,44 @@ PIXI.loader
     .add("assets/images/monkey.png")
     .load(setup);
 
-function setup(){
+var coin = new Howl({
+    src: ['assets/sounds/coin.wav']
+});
+
+function setup() {
     var stage = new PIXI.Container();
     var monkey = new PIXI.Sprite(
-            PIXI.loader.resources["assets/images/monkey.png"].texture
-            );
+        PIXI.loader.resources["assets/images/monkey.png"].texture
+    );
     monkey.interactive = true;
+    monkey.anchor.x = 0.5;
+    monkey.anchor.y = 0.5;
     monkey.on('mousedown', onDown);
     monkey.on('touchstart', onDown);
-    monkey.position.x = (renderer.width / 2) - 200;
-    monkey.position.y = (renderer.height / 2) - 100;
+    monkey.position.x = (renderer.width / 2);
+    monkey.position.y = (renderer.height / 2);
+
     stage.addChild(monkey);
     requestAnimationFrame(animate);
 
+    MAX_SCALE = 0.25;
+    var angle = 0.00;
+
     function animate() {
+        angle = angle + 0.04;
+        var sin = Math.sin(angle);
+        monkey.scale.x = 1.00 + MAX_SCALE * sin;
+        monkey.scale.y = 1.00 + MAX_SCALE * sin;
         renderer.render(stage);
-        requestAnimationFrame( animate );
+        requestAnimationFrame(animate);
     }
 
-    function onDown (eventData) {
-        var coin = new Howl({
-src: ['assets/sounds/coin.wav']
-});
+    function onDown() {
+        coin.play();
+    }
+}
 
-coin.play();
-}
-}
-window.onresize = function (event){ 
+window.onresize = function () {
     renderer.resize(window.innerWidth, window.innerHeight);
 }
 
