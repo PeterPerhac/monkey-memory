@@ -16,8 +16,8 @@ var levels = [
         button: 0,
         numbers: 3,
         hidingNumbers: false,
-        message: "Tap numbers in ascending order - low to high",
-        subMessage: "Timer starts as soon as you press the button."
+        message: "Tap numbers in ascending order",
+        subMessage: "Timer starts as soon as you press the button"
     },
     {button: 1, numbers: 4, hidingNumbers: false},
     {button: 1, numbers: 5, hidingNumbers: false},
@@ -32,8 +32,8 @@ var levels = [
         button: 2,
         numbers: 3,
         hidingNumbers: true,
-        message: "After pressing the first number, the rest will be \"cloaked\".",
-        subMessage: "Take a good look before tapping the first number"
+        message: "Take a good look before tapping the first number",
+        subMessage: "After pressing the first number, the rest will be \"cloaked\""
     },
     {button: 3, numbers: 4, hidingNumbers: true},
     {button: 3, numbers: 5, hidingNumbers: true},
@@ -91,7 +91,7 @@ function setup() {
         fontFamily: 'Tahoma',
         fontSize: '28px',
         fontWeight: 'bold',
-        fill: '#F7EDCA',
+        fill: '#00beef',
         stroke: '#4a1850',
         strokeThickness: 5,
         dropShadow: true,
@@ -99,7 +99,7 @@ function setup() {
         dropShadowAngle: Math.PI / 6,
         dropShadowDistance: 6,
         wordWrap: true,
-        wordWrapWidth: 440
+        wordWrapWidth: 600
     };
 
     var subMessageStyle = {
