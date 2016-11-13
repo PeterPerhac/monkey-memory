@@ -16,72 +16,59 @@ var coin = new Howl({
     src: ['assets/sounds/coin.wav']
 });
 
+var center = {x: (renderer.width / 2), y: (renderer.height / 2)};
+
 function setup() {
     var stage = new PIXI.Container();
 
-    var btn = buttons[levels[0].button];
-    var circle = new PIXI.Graphics();
-    circle.beginFill(btn.color);
+    var currentLevel = 0;
 
-    // TODO these two values need looking into
-    circle.drawCircle(100, 100, btn.radius);
-    circle.endFill();
+    var createButton = function (level) {
+        var btnData = buttons[levels[level].button];
+        var btn = new PIXI.Graphics();
+        btn.interactive = true;
+        btn.lineStyle(10, btnData.color, 1);
+        btn.beginFill(btnData.color, 0.3);
+        var c = {x: 0, y:0, r: btnData.radius};
+        btn.drawCircle(c.x, c.y, c.r);
+        btn.endFill();
+        btn.hitArea = new PIXI.Circle(c.x, c.y, c.r);
 
-    var btnStart = new PIXI.Sprite(circle.generateTexture());
-    btnStart.interactive = true;
-    btnStart.anchor.x = 0.5;
-    btnStart.anchor.y = 0.5;
-    btnStart.on('click', function () {
-        coin.play();
-    });
-    btnStart.on('tap', function () {
-        coin.play();
-    });
-    btnStart.position.x = (renderer.width / 2);
-    btnStart.position.y = (renderer.height / 2);
-    stage.addChild(btnStart);
+        var buttonLabel = new PIXI.Text(btnData.label, {fontFamily: "monospace", fontSize: "24px", fill: "#00ff00"});
+        buttonLabel.anchor.x = 0.5;
+        buttonLabel.anchor.y = 0.5;
 
-    var buttonLabelStyle = {
-        fontFamily: "Tahoma, sans-serif",
-        fontSize: "24px",
-        fill: "#fff",
-        stroke: "#000",
-        strokeThickness: 5
+        btn.position.x = center.x;
+        btn.position.y = center.y;
+        btn.addChild(buttonLabel);
+        btn.on('click', function () {
+            coin.play();
+        });
+        btn.on('tap', function () {
+            coin.play();
+        });
+        return btn;
     };
-    var buttonLabel = new PIXI.Text(btn.label, buttonLabelStyle);
-    buttonLabel.anchor.x = 0.5;
-    buttonLabel.anchor.y = 0.5;
-    btnStart.addChild(buttonLabel);
 
-    var messageStyle = {
-        fontFamily: "Tahoma, sans-serif",
-        fontSize: "26px",
-        fill: "#000080",
-        stroke: "#fff",
-        strokeThickness: 5
-    };
-    var message = new PIXI.Text(levels[0].message, messageStyle);
-    message.anchor.x = 0.5;
-    message.anchor.y = 0.5;
-    message.x = (renderer.width / 2);
-    message.y = (renderer.height / 2) + buttons[0].radius * 2;
+    function createMessage(message, fontSize, yOffset) {
+        var messageStyle = {
+            fontFamily: "monospace",
+            fontSize: "" + fontSize + "px",
+            fill: "#00ff00",
+            stroke: "#00dd00",
+            strokeThickness: 2
+        };
+        var msg = new PIXI.Text(message, messageStyle);
+        msg.anchor.x = 0.5;
+        msg.anchor.y = 0.5;
+        msg.x = center.x;
+        msg.y = center.y + yOffset;
+        return msg;
+    }
 
-    var subMessageStyle = {
-        fontFamily: "Tahoma, sans-serif",
-        fontSize: "20px",
-        fill: "#cc00ff",
-        stroke: "#0ff",
-        strokeThickness: 3
-    };
-    var subMessage = new PIXI.Text(levels[0].subMessage, subMessageStyle);
-    subMessage.anchor.x = 0.5;
-    subMessage.anchor.y = 0.5;
-    subMessage.x = (renderer.width / 2);
-    subMessage.y = (renderer.height / 2) + buttons[0].radius * 2 + 50;
-
-    stage.addChild(btnStart);
-    stage.addChild(message);
-    stage.addChild(subMessage);
+    stage.addChild(createButton(currentLevel));
+    stage.addChild(createMessage(levels[currentLevel].message, 28, 150));
+    stage.addChild(createMessage(levels[currentLevel].subMessage, 22, 180));
 
     renderer.render(stage);
 }
@@ -93,7 +80,7 @@ function setup() {
 
 var buttons = [
     // 0 - start the whole thing
-    {color: 0xBEEF00, label: 'Start', radius: 100},
+    {color: 0x00FF00, label: 'Start', radius: 100},
     // 1 - continue in the first part of the game
     {color: 0xBEEF00, label: 'Next', radius: 75},
     // 2 - start the second part of the game
