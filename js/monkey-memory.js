@@ -55,8 +55,8 @@ function numberClicked(event) {
 
 function cloakNumbers() {
     gameStage.children.forEach(function (c) {
-        //TODO  figure out a way to cloak the numbers
-    })
+        c.removeChildren();
+    });
 }
 
 
@@ -228,8 +228,8 @@ var buttons = [
 var levels = [
     {
         button: 0,
-        numbers: 9,
-        hidingNumbers: false,
+        numbers: 3,
+        hidingNumbers: true,
         message: "Tap numbers in ascending order",
         subMessage: "Timer starts as soon as you press the button"
     },
