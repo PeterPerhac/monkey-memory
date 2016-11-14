@@ -21,12 +21,13 @@ var tap = new Howl({
 
 const screen = {w: renderer.width, h: renderer.height};
 const center = {x: (screen.w / 2), y: (screen.h / 2)};
+const tileWidth = 100;
+const tileHeight = 130;
+const PADDING = 20;
+
 var currentLevel = 0;
 var numbersLeft = 0;
 var gameStage;
-const tileWidth = 70;
-const tileHeight = 100;
-const PADDING = 10;
 
 function buttonClicked() {
     tap.play();
@@ -179,12 +180,12 @@ function startLevel(lvl) {
             var num = new PIXI.Graphics();
             num.interactive = true;
             num.lineStyle(5, 0x00FF00, 1);
-            var r = {x: x, y: y, w: 70, h: 100};
+            var r = {x: x, y: y, w: tileWidth, h: tileHeight};
             num.drawRect(r.x, r.y, r.w, r.h);
             //noinspection JSUnresolvedFunction
             num.hitArea = new PIXI.Rectangle(r.x, r.y, r.w, r.h);
 
-            var buttonLabel = new PIXI.Text("" + no, {fontFamily: "monospace", fontSize: "72px", fill: "#00ff00"});
+            var buttonLabel = new PIXI.Text("" + no, {fontFamily: "monospace", fontSize: "105px", fill: "#00ff00"});
             buttonLabel.x = r.x + 15;
             buttonLabel.y = r.y + 15;
             num.addChild(buttonLabel);
