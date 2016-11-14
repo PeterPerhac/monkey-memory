@@ -30,7 +30,9 @@ const center = {x: (screen.w / 2), y: (screen.h / 2)};
 const TILE_WIDTH = 120;
 const TILE_HEIGHT = 150;
 const NUMBER_FONT_SIZE = 125;
-const PADDING = 20;
+const NUMBER_X_OFFSET = 20;
+const NUMBER_Y_OFFSET = 15;
+const PADDING = 10;
 
 var currentLevel = 0;
 var numbersLeft = 0;
@@ -61,7 +63,7 @@ function numberClicked(event) {
         });
     }
 
-    addGameEvent("number", event.target['numberValue'])
+    addGameEvent("number", event.target['numberValue']);
     numbersLeft = numbersLeft - 1;
     if (numbersLeft == 0) {
         SOUND_LEVEL_DONE.play();
@@ -211,8 +213,8 @@ function startLevel(lvl) {
                 fontSize: "" + NUMBER_FONT_SIZE + "px",
                 fill: "#00ff00"
             });
-            buttonLabel.x = r.x + 15;
-            buttonLabel.y = r.y + 15;
+            buttonLabel.x = r.x + NUMBER_X_OFFSET;
+            buttonLabel.y = r.y + NUMBER_Y_OFFSET;
             numberSprite.addChild(buttonLabel);
 
             numberSprite.on('click', numberClicked);
@@ -258,8 +260,8 @@ var levels = [
     {button: 1, numbers: 3, hidingNumbers: false},
     {button: 1, numbers: 4, hidingNumbers: false},
     {button: 1, numbers: 4, hidingNumbers: false},
-    // {button: 1, numbers: 5, hidingNumbers: false},
-    // {button: 1, numbers: 5, hidingNumbers: false},
+    {button: 1, numbers: 5, hidingNumbers: false},
+    {button: 1, numbers: 5, hidingNumbers: false},
     // {button: 1, numbers: 6, hidingNumbers: false},
     // {button: 1, numbers: 7, hidingNumbers: false},
     // {button: 1, numbers: 8, hidingNumbers: false},
