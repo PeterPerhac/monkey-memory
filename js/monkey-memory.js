@@ -9,7 +9,7 @@ renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
 
 PIXI.loader
-    .add("assets/sounds/wooo.wav")
+    .add("assets/sounds/level-done.wav")
     .add("assets/sounds/tap.wav")
     .load(function () {
         setupPreLevel(0);
@@ -41,11 +41,11 @@ function buttonClicked() {
 
 
 function numberClicked(event) {
-    tap.play();
     numbersLeft = numbersLeft - 1;
     if (numbersLeft == 0) {
         setupPreLevel(currentLevel + 1);
     } else {
+        tap.play();
         gameStage.removeChild(event.target);
         if (levels[currentLevel].hidingNumbers) {
             cloakNumbers();
@@ -104,14 +104,14 @@ function setupPreLevel(lvl) {
     function createLevelStartPage(level) {
         var stage = new PIXI.Container();
         stage.addChild(createButton(level));
-        stage.addChild(createMessage(levels[level].message, 28, 130));
-        stage.addChild(createMessage(levels[level].subMessage, 22, 170));
+        stage.addChild(createMessage(levels[level].message, 28, 150));
+        stage.addChild(createMessage(levels[level].subMessage, 22, 190));
         return stage;
     }
 
     currentLevel = lvl;
     new Howl({
-        src: ['assets/sounds/wooo.wav']
+        src: ['assets/sounds/level-done.wav']
     }).play();
     renderer.render(createLevelStartPage(lvl));
 }
@@ -121,7 +121,6 @@ function startLevel(lvl) {
 
     function createLevelScreen(level) {
         function generateNumbers(numbers) {
-            var recursionNo = 0;
 
             function getRandomPosition(ps, tw, th) {
                 function validPos(p) {
@@ -165,13 +164,14 @@ function startLevel(lvl) {
                 return (validPos(pos)) ? pos : getRandomPosition(ps, tw, th);
             }
 
+            var recursionNo = 0;
             var a = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             var rt = [];
             for (var i = 0; i < numbers; i++) {
                 var r = Math.floor(Math.random() * a.length);
-                var a2 = a.splice(r, 1);
+                var picked = a.splice(r, 1);
                 var randPos = getRandomPosition(rt, tileWidth, tileHeight);
-                rt.push({value: a2[0], x: randPos.x, y: randPos.y});
+                rt.push({value: picked[0], x: randPos.x, y: randPos.y});
             }
             return rt;
         }
@@ -213,7 +213,7 @@ var buttons = [
     // 1 - continue in the first part of the game
     {color: 0x00FFFF, label: 'Next', radius: 75},
     // 2 - start the second part of the game
-    {color: 0x00FF00, label: 'Proceed', radius: 100},
+    {color: 0xFFFF00, label: 'Proceed', radius: 100},
     // 3 - continue in the second part of the game
     {color: 0x00FFFF, label: 'Next', radius: 75},
     // 4 - end of game => show me the results
@@ -223,35 +223,37 @@ var buttons = [
 var levels = [
     {
         button: 0,
-        numbers: 3,
+        numbers: 2,
         hidingNumbers: false,
         message: "Click numbers in ascending order (low to high)",
         subMessage: "Timer starts as soon as you press the button above."
     },
-    {button: 1, numbers: 4, hidingNumbers: false},
-    {button: 1, numbers: 5, hidingNumbers: false},
-    {button: 1, numbers: 6, hidingNumbers: false},
-    {button: 1, numbers: 7, hidingNumbers: false},
-    {button: 1, numbers: 7, hidingNumbers: false},
-    {button: 1, numbers: 8, hidingNumbers: false},
-    {button: 1, numbers: 8, hidingNumbers: false},
-    {button: 1, numbers: 9, hidingNumbers: false},
-    {button: 1, numbers: 9, hidingNumbers: false},
+    {button: 1, numbers: 3, hidingNumbers: false},
+    {button: 1, numbers: 3, hidingNumbers: false},
+    // {button: 1, numbers: 4, hidingNumbers: false},
+    // {button: 1, numbers: 4, hidingNumbers: false},
+    // {button: 1, numbers: 5, hidingNumbers: false},
+    // {button: 1, numbers: 5, hidingNumbers: false},
+    // {button: 1, numbers: 6, hidingNumbers: false},
+    // {button: 1, numbers: 7, hidingNumbers: false},
+    // {button: 1, numbers: 8, hidingNumbers: false},
+    // {button: 1, numbers: 9, hidingNumbers: false},
     {
         button: 2,
-        numbers: 3,
+        numbers: 2,
         hidingNumbers: true,
         message: "Take a good look before tapping the first number",
         subMessage: "Numbers will be hidden after first click"
     },
+    {button: 3, numbers: 3, hidingNumbers: true},
+    {button: 3, numbers: 3, hidingNumbers: true},
     {button: 3, numbers: 4, hidingNumbers: true},
+    {button: 3, numbers: 4, hidingNumbers: true},
+    {button: 3, numbers: 5, hidingNumbers: true},
     {button: 3, numbers: 5, hidingNumbers: true},
     {button: 3, numbers: 6, hidingNumbers: true},
     {button: 3, numbers: 7, hidingNumbers: true},
-    {button: 3, numbers: 7, hidingNumbers: true},
     {button: 3, numbers: 8, hidingNumbers: true},
-    {button: 3, numbers: 8, hidingNumbers: true},
-    {button: 3, numbers: 9, hidingNumbers: true},
     {button: 3, numbers: 9, hidingNumbers: true},
     {
         button: 4,
