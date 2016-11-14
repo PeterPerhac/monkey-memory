@@ -10,29 +10,48 @@ renderer.resize(window.innerWidth, window.innerHeight);
 
 PIXI.loader
     .add("assets/images/monkey.png")
+    .add("assets/sounds/wooo.wav")
     .load(function () {
-        setup(0)
+        setupPreLevel(0);
+        new Howl({
+            src: ['assets/sounds/wooo.wav']
+        }).play();
     });
 
 var coin = new Howl({
     src: ['assets/sounds/coin.wav']
 });
 
-var center = {x: (renderer.width / 2), y: (renderer.height / 2)};
+const screen = {w: renderer.width, h: renderer.height};
+const center = {x: (screen.w / 2), y: (screen.h / 2)};
 var currentLevel = 0;
+var numbersLeft = 0;
+var gameStage;
+const numberWidth = 70;
+const numberHeight = 100;
 
 function buttonClicked() {
     coin.play();
     if (currentLevel == levels.length - 1) {
         // showResultsPage();
     } else {
-        currentLevel = currentLevel + 1;
-        setup(currentLevel);
-        // startThisLevel(currentLevel);
+        gameStage = startLevel(currentLevel);
+        renderer.render(gameStage);
     }
 }
 
-function setup(lvl) {
+function numberClicked(event) {
+    coin.play();
+    numbersLeft = numbersLeft - 1;
+    if (numbersLeft == 0) {
+        setupPreLevel(currentLevel + 1);
+    } else {
+        gameStage.removeChild(event.target);
+        renderer.render(gameStage);
+    }
+}
+
+function setupPreLevel(lvl) {
 
     function createButton(level) {
         var btnData = buttons[levels[level].button];
@@ -56,6 +75,7 @@ function setup(lvl) {
         btn.on('tap', buttonClicked);
         return btn;
     }
+
     function createMessage(message, fontSize, yOffset) {
         var messageStyle = {
             fontFamily: "monospace",
@@ -80,8 +100,86 @@ function setup(lvl) {
         return stage;
     }
 
+    currentLevel = lvl;
     renderer.render(createLevelStartPage(lvl));
 }
+
+
+function startLevel(lvl) {
+
+    function createLevelScreen(level) {
+        function generateNumbers(numbers) {
+            var recursionNo = 0;
+
+            function getRandomPosition(ps, tw, th) {
+                function validPos(p) {
+                    var valid = true;
+                    ps.forEach(function (e) {
+                        if (
+                            (p.x >= e.x && p.x <= (e.x + tw)) &&
+                            (p.y >= e.y && p.y <= (e.y + th))
+                        ) {
+                            valid = false;
+                        }
+                    });
+                    return valid;
+                }
+
+                recursionNo = recursionNo + 1;
+                if (recursionNo > 1000) {
+                    alert("Failed to calculate available position for number tiles! Try resizing the window.");
+                    return;
+                }
+                var pos = {
+                    x: Math.floor(Math.random() * (screen.w - tw)),
+                    y: Math.floor(Math.random() * (screen.h - th))
+                };
+                return (validPos(pos)) ? pos : getRandomPosition(ps, tw, th);
+            }
+
+            var a = [3, 6, 9, 1, 4, 7, 2, 5, 8];
+            var rt = [];
+            for (var i = 0; i < numbers; i++) {
+                var r = Math.floor(Math.random() * a.length);
+                var a2 = a.splice(r, 1);
+                var randPos = getRandomPosition(rt, numberWidth, numberHeight);
+                rt.push({value: a2[0], x: randPos.x, y: randPos.y});
+            }
+            return rt;
+        }
+
+        function createNumberSprite(no, x, y) {
+            var num = new PIXI.Graphics();
+            num.interactive = true;
+            num.lineStyle(5, 0x00FF00, 1);
+            var r = {x: x, y: y, w: 70, h: 100};
+            num.drawRect(r.x, r.y, r.w, r.h);
+            num.hitArea = new PIXI.Rectangle(r.x, r.y, r.w, r.h);
+
+            var buttonLabel = new PIXI.Text("" + no, {fontFamily: "monospace", fontSize: "72px", fill: "#00ff00"});
+            buttonLabel.x = r.x + 15;
+            buttonLabel.y = r.y + 15;
+            num.addChild(buttonLabel);
+
+            num.on('click', numberClicked);
+            num.on('tap', numberClicked);
+            return num;
+        }
+
+        var stage = new PIXI.Container();
+        var levelData = levels[level];
+        numbersLeft = levelData.numbers;
+        var numbers = generateNumbers(numbersLeft);
+        numbers.forEach(function (n) {
+            var sprite = createNumberSprite(n.value, n.x, n.y);
+            stage.addChild(sprite);
+        });
+        return stage;
+    }
+
+    return createLevelScreen(lvl);
+}
+
 
 // window.onresize = function () {
 //     renderer.resize(window.innerWidth, window.innerHeight);
@@ -109,7 +207,7 @@ var levels = [
         message: "Tap numbers in ascending order",
         subMessage: "Timer starts as soon as you press the button"
     },
-    {button: 1, numbers: 4, hidingNumbers: false},
+    // {button: 1, numbers: 4, hidingNumbers: false},
     // {button: 1, numbers: 5, hidingNumbers: false},
     // {button: 1, numbers: 6, hidingNumbers: false},
     // {button: 1, numbers: 7, hidingNumbers: false},
@@ -117,15 +215,15 @@ var levels = [
     // {button: 1, numbers: 8, hidingNumbers: false},
     // {button: 1, numbers: 8, hidingNumbers: false},
     // {button: 1, numbers: 9, hidingNumbers: false},
-    // {button: 1, numbers: 9, hidingNumbers: false},
+    {button: 1, numbers: 9, hidingNumbers: false},
     {
         button: 2,
         numbers: 3,
         hidingNumbers: true,
-        message: "Take a good look before tapping the first number",
-        subMessage: "After pressing the first number, the rest will be \"cloaked\""
+        message: "Take a good look before tapping the first numberWidth",
+        subMessage: "After pressing the first numberWidth, the rest will be \"cloaked\""
     },
-    {button: 3, numbers: 4, hidingNumbers: true},
+    // {button: 3, numbers: 4, hidingNumbers: true},
     // {button: 3, numbers: 5, hidingNumbers: true},
     // {button: 3, numbers: 6, hidingNumbers: true},
     // {button: 3, numbers: 7, hidingNumbers: true},
@@ -133,7 +231,7 @@ var levels = [
     // {button: 3, numbers: 8, hidingNumbers: true},
     // {button: 3, numbers: 8, hidingNumbers: true},
     // {button: 3, numbers: 9, hidingNumbers: true},
-    // {button: 3, numbers: 9, hidingNumbers: true},
+    {button: 3, numbers: 9, hidingNumbers: true},
     {
         button: 4,
         numbers: 0,
