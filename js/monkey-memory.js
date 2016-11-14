@@ -13,9 +13,6 @@ PIXI.loader
     .add("assets/sounds/wooo.wav")
     .load(function () {
         setupPreLevel(0);
-        new Howl({
-            src: ['assets/sounds/wooo.wav']
-        }).play();
     });
 
 var coin = new Howl({
@@ -27,8 +24,9 @@ const center = {x: (screen.w / 2), y: (screen.h / 2)};
 var currentLevel = 0;
 var numbersLeft = 0;
 var gameStage;
-const numberWidth = 70;
-const numberHeight = 100;
+const tileWidth = 70;
+const tileHeight = 100;
+const PADDING = 10;
 
 function buttonClicked() {
     coin.play();
@@ -40,6 +38,7 @@ function buttonClicked() {
     }
 }
 
+
 function numberClicked(event) {
     coin.play();
     numbersLeft = numbersLeft - 1;
@@ -47,9 +46,19 @@ function numberClicked(event) {
         setupPreLevel(currentLevel + 1);
     } else {
         gameStage.removeChild(event.target);
+        if (levels[currentLevel].hidingNumbers) {
+            cloakNumbers();
+        }
         renderer.render(gameStage);
     }
 }
+
+function cloakNumbers() {
+    gameStage.children.forEach(function (c) {
+        //TODO  figure out a way to cloak the numbers
+    })
+}
+
 
 function setupPreLevel(lvl) {
 
@@ -101,6 +110,9 @@ function setupPreLevel(lvl) {
     }
 
     currentLevel = lvl;
+    new Howl({
+        src: ['assets/sounds/wooo.wav']
+    }).play();
     renderer.render(createLevelStartPage(lvl));
 }
 
@@ -113,14 +125,30 @@ function startLevel(lvl) {
 
             function getRandomPosition(ps, tw, th) {
                 function validPos(p) {
+                    function intersectRect(r1, r2) {
+                        return !(
+                            r2.left > r1.right ||
+                            r2.right < r1.left ||
+                            r2.top > r1.bottom ||
+                            r2.bottom < r1.top
+                        );
+                    }
+
                     var valid = true;
                     ps.forEach(function (e) {
-                        if (
-                            (p.x >= e.x && p.x <= (e.x + tw)) &&
-                            (p.y >= e.y && p.y <= (e.y + th))
-                        ) {
-                            valid = false;
-                        }
+                        var curreRect = {
+                            left: e.x - PADDING,
+                            right: e.x + tw + PADDING,
+                            top: e.y - PADDING,
+                            bottom: e.y + th + PADDING
+                        };
+                        var underTest = {
+                            left: p.x - PADDING,
+                            right: p.x + tw + PADDING,
+                            top: p.y - PADDING,
+                            bottom: p.y + th + PADDING
+                        };
+                        valid = valid && !intersectRect(underTest, curreRect)
                     });
                     return valid;
                 }
@@ -142,7 +170,7 @@ function startLevel(lvl) {
             for (var i = 0; i < numbers; i++) {
                 var r = Math.floor(Math.random() * a.length);
                 var a2 = a.splice(r, 1);
-                var randPos = getRandomPosition(rt, numberWidth, numberHeight);
+                var randPos = getRandomPosition(rt, tileWidth, tileHeight);
                 rt.push({value: a2[0], x: randPos.x, y: randPos.y});
             }
             return rt;
@@ -169,10 +197,8 @@ function startLevel(lvl) {
         var stage = new PIXI.Container();
         var levelData = levels[level];
         numbersLeft = levelData.numbers;
-        var numbers = generateNumbers(numbersLeft);
-        numbers.forEach(function (n) {
-            var sprite = createNumberSprite(n.value, n.x, n.y);
-            stage.addChild(sprite);
+        generateNumbers(numbersLeft).forEach(function (n) {
+            stage.addChild(createNumberSprite(n.value, n.x, n.y));
         });
         return stage;
     }
@@ -202,7 +228,7 @@ var buttons = [
 var levels = [
     {
         button: 0,
-        numbers: 3,
+        numbers: 9,
         hidingNumbers: false,
         message: "Tap numbers in ascending order",
         subMessage: "Timer starts as soon as you press the button"
@@ -220,8 +246,8 @@ var levels = [
         button: 2,
         numbers: 3,
         hidingNumbers: true,
-        message: "Take a good look before tapping the first numberWidth",
-        subMessage: "After pressing the first numberWidth, the rest will be \"cloaked\""
+        message: "Take a good look before tapping the first number",
+        subMessage: "From here you'll only see the numbers until you press the first one"
     },
     // {button: 3, numbers: 4, hidingNumbers: true},
     // {button: 3, numbers: 5, hidingNumbers: true},
