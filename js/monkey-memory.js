@@ -9,14 +9,14 @@ renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
 
 PIXI.loader
-    .add("assets/images/monkey.png")
     .add("assets/sounds/wooo.wav")
+    .add("assets/sounds/tap.wav")
     .load(function () {
         setupPreLevel(0);
     });
 
-var coin = new Howl({
-    src: ['assets/sounds/coin.wav']
+var tap = new Howl({
+    src: ["assets/sounds/tap.wav"]
 });
 
 const screen = {w: renderer.width, h: renderer.height};
@@ -29,7 +29,7 @@ const tileHeight = 100;
 const PADDING = 10;
 
 function buttonClicked() {
-    coin.play();
+    tap.play();
     if (currentLevel == levels.length - 1) {
         // showResultsPage();
     } else {
@@ -40,7 +40,7 @@ function buttonClicked() {
 
 
 function numberClicked(event) {
-    coin.play();
+    tap.play();
     numbersLeft = numbersLeft - 1;
     if (numbersLeft == 0) {
         setupPreLevel(currentLevel + 1);
@@ -71,6 +71,7 @@ function setupPreLevel(lvl) {
         var c = {x: 0, y: 0, r: btnData.radius};
         btn.drawCircle(c.x, c.y, c.r);
         btn.endFill();
+        //noinspection JSUnresolvedFunction
         btn.hitArea = new PIXI.Circle(c.x, c.y, c.r);
 
         var buttonLabel = new PIXI.Text(btnData.label, {fontFamily: "monospace", fontSize: "24px", fill: "#00ff00"});
@@ -89,9 +90,7 @@ function setupPreLevel(lvl) {
         var messageStyle = {
             fontFamily: "monospace",
             fontSize: "" + fontSize + "px",
-            fill: "#00ff00",
-            stroke: "#00dd00",
-            strokeThickness: 2
+            fill: "#00ff00"
         };
         var msg = new PIXI.Text(message, messageStyle);
         msg.anchor.x = 0.5;
@@ -165,7 +164,7 @@ function startLevel(lvl) {
                 return (validPos(pos)) ? pos : getRandomPosition(ps, tw, th);
             }
 
-            var a = [3, 6, 9, 1, 4, 7, 2, 5, 8];
+            var a = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             var rt = [];
             for (var i = 0; i < numbers; i++) {
                 var r = Math.floor(Math.random() * a.length);
@@ -182,6 +181,7 @@ function startLevel(lvl) {
             num.lineStyle(5, 0x00FF00, 1);
             var r = {x: x, y: y, w: 70, h: 100};
             num.drawRect(r.x, r.y, r.w, r.h);
+            //noinspection JSUnresolvedFunction
             num.hitArea = new PIXI.Rectangle(r.x, r.y, r.w, r.h);
 
             var buttonLabel = new PIXI.Text("" + no, {fontFamily: "monospace", fontSize: "72px", fill: "#00ff00"});
@@ -206,12 +206,6 @@ function startLevel(lvl) {
     return createLevelScreen(lvl);
 }
 
-
-// window.onresize = function () {
-//     renderer.resize(window.innerWidth, window.innerHeight);
-// };
-
-
 var buttons = [
     // 0 - start the whole thing
     {color: 0x00FF00, label: 'Start', radius: 100},
@@ -229,34 +223,34 @@ var levels = [
     {
         button: 0,
         numbers: 3,
-        hidingNumbers: true,
-        message: "Tap numbers in ascending order",
-        subMessage: "Timer starts as soon as you press the button"
+        hidingNumbers: false,
+        message: "Click numbers in ascending order (low to high)",
+        subMessage: "Timer starts as soon as you press the button above."
     },
-    // {button: 1, numbers: 4, hidingNumbers: false},
-    // {button: 1, numbers: 5, hidingNumbers: false},
-    // {button: 1, numbers: 6, hidingNumbers: false},
-    // {button: 1, numbers: 7, hidingNumbers: false},
-    // {button: 1, numbers: 7, hidingNumbers: false},
-    // {button: 1, numbers: 8, hidingNumbers: false},
-    // {button: 1, numbers: 8, hidingNumbers: false},
-    // {button: 1, numbers: 9, hidingNumbers: false},
+    {button: 1, numbers: 4, hidingNumbers: false},
+    {button: 1, numbers: 5, hidingNumbers: false},
+    {button: 1, numbers: 6, hidingNumbers: false},
+    {button: 1, numbers: 7, hidingNumbers: false},
+    {button: 1, numbers: 7, hidingNumbers: false},
+    {button: 1, numbers: 8, hidingNumbers: false},
+    {button: 1, numbers: 8, hidingNumbers: false},
+    {button: 1, numbers: 9, hidingNumbers: false},
     {button: 1, numbers: 9, hidingNumbers: false},
     {
         button: 2,
         numbers: 3,
         hidingNumbers: true,
         message: "Take a good look before tapping the first number",
-        subMessage: "From here you'll only see the numbers until you press the first one"
+        subMessage: "Numbers will be hidden after first click"
     },
-    // {button: 3, numbers: 4, hidingNumbers: true},
-    // {button: 3, numbers: 5, hidingNumbers: true},
-    // {button: 3, numbers: 6, hidingNumbers: true},
-    // {button: 3, numbers: 7, hidingNumbers: true},
-    // {button: 3, numbers: 7, hidingNumbers: true},
-    // {button: 3, numbers: 8, hidingNumbers: true},
-    // {button: 3, numbers: 8, hidingNumbers: true},
-    // {button: 3, numbers: 9, hidingNumbers: true},
+    {button: 3, numbers: 4, hidingNumbers: true},
+    {button: 3, numbers: 5, hidingNumbers: true},
+    {button: 3, numbers: 6, hidingNumbers: true},
+    {button: 3, numbers: 7, hidingNumbers: true},
+    {button: 3, numbers: 7, hidingNumbers: true},
+    {button: 3, numbers: 8, hidingNumbers: true},
+    {button: 3, numbers: 8, hidingNumbers: true},
+    {button: 3, numbers: 9, hidingNumbers: true},
     {button: 3, numbers: 9, hidingNumbers: true},
     {
         button: 4,
@@ -266,4 +260,3 @@ var levels = [
         subMessage: "Press the button to review your results"
     }
 ];
-
