@@ -232,7 +232,7 @@ function startLevel(lvl) {
     return createLevelScreen(lvl);
 }
 
-function showResultsPage(){
+function showResultsPage() {
     if (!gameEvents) {
         alert("No game events to analyse.");
         return;
@@ -253,32 +253,21 @@ function gameStats(events) {
         var groupedData = groupedDataByLevels[0];
         for (var lvl in groupedData) {
             if (groupedData.hasOwnProperty(lvl)) {
+                var ls = {level: lvl, ordered: true, clickedOrder: []};
                 var levelData = groupedData[lvl]; //ret: array of events for each level
                 var prevValue = 0;
-                var ordered = true;
-                var clickedOrder = [];
-
                 levelData.forEach(function (event) {
                     const num = event.value;
                     if (num == 0) return;
-                    ordered = ordered && num > prevValue;
+                    ls.ordered = ls.ordered && (num > prevValue);
                     prevValue = num;
-                    clickedOrder.push(num);
+                    ls.clickedOrder.push(num);
                 });
-
                 const firstClick = levelData[0].timestamp;
-                const firstClickTime = levelData[1].timestamp - firstClick;
-                const totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
-                const averageClickTime = totalTimeForLevel / (levelData.length - 1);
-
-                stats.push({
-                    level: lvl,
-                    ordered: ordered,
-                    clickedOrder: clickedOrder,
-                    firstClickTime: firstClickTime,
-                    averageClickTime: averageClickTime,
-                    totalTimeForLevel: totalTimeForLevel
-                });
+                ls.firstClickTime = levelData[1].timestamp - firstClick;
+                ls.totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
+                ls.averageClickTime = ls.totalTimeForLevel / (levelData.length - 1);
+                stats.push(ls);
             }
         }
     });
