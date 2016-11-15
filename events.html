@@ -60,7 +60,7 @@
     <thead>
     <tr>
         <th>Score</th>
-        <th><span id="score">100%</span></th>
+        <th><span id="score">N/A</span></th>
     </tr>
     </thead>
     <tbody id="result-rows-holder">
@@ -75,18 +75,10 @@
         const gameStatistics = gameStats(events);
         const score = calculateScore(gameStatistics);
         document.getElementById("score").innerHTML = "" + ((score.correct / score.total) * 100).toFixed(1) + "% (" + score.correct + " of " + score.total + " correct)";
-
-        // Grab the template script
-        var theTemplateScript = document.getElementById("result-row-template").innerHTML;
-
-        // Compile the template
-        var theTemplate = Handlebars.compile(theTemplateScript);
-
-        // Pass our stats to the template
-        var theCompiledHtml = theTemplate({stats: gameStatistics});
-
-        // Add the compiled html to the page
-        document.getElementById("result-rows-holder").innerHTML = theCompiledHtml;
+        var templateScript = document.getElementById("result-row-template").innerHTML;
+        var template = Handlebars.compile(templateScript);
+        var compiledTemplate = template({stats: gameStatistics});
+        document.getElementById("result-rows-holder").innerHTML = compiledTemplate;
 
         function calculateScore(stats) {
             var s = {total: stats.length, correct: 0};

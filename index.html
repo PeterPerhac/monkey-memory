@@ -11,32 +11,95 @@
     <style>
         * {
             padding: 0;
-            margin: 0
+            margin: 0;
+            background-color: black;
+            color: lime;
+            font-family: monospace;
+            font-size: 24px;
+        }
+
+        table {
+            width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+        }
+
+        table, tr, td, th {
+            border-collapse: collapse;
+            border: 1px solid lime;
+            padding: 10px;
+        }
+
+        th {
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+        li, td span, li span {
+            font-size: 14px;
+        }
+
+        ul, li, table span, li span {
+            background-color: inherit;
+            list-style-position: inside;
+        }
+
+        #start-again-button {
+            display: block;
+            text-align: center;
+            width: 400px;
+            font-size: 48px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 75px;
+            border: 3px solid lime;
+            cursor: hand;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
 <div id="results-table-div" style="display: none">
+
+    <a id="start-again-button" href="#" onclick="javascript:location.reload(); return false;">Start Again</a>
+
     <table>
         <thead>
         <tr>
-            <th>Score:</th>
-            <th><span id="score">100%</span></th>
+            <th>Score</th>
+            <th><span id="score">N/A</span></th>
         </tr>
         </thead>
-        <tbody>
-        <tr class="levelRow">
-            <td class="levelLabel">Level</td>
-            <td class="levelDetails"></td>
-        </tr>
+        <tbody id="result-rows-holder">
         </tbody>
     </table>
 </div>
 
 <script src="js/pixi.min.js"></script>
 <script src="js/howler.min.js"></script>
-<script src="js/monkey-memory.js"></script>
 <script src="js/highland.min.js"></script>
+<script src="js/handlebars.min-7535e48.js"></script>
+<script src="js/monkey-memory.js"></script>
+<script id="result-row-template" type="text/x-handlebars-template">
+    {{#each stats}}
+    <tr>
+        <td>Level {{this.level}}</td>
+        {{#if this.ordered}}
+        <td>
+            {{else}}
+        <td style="background-color: #600000">
+            {{/if}}
+            <span>Clicked sequence: {{this.clickedOrder}}</span>
+            <ul>
+                <li>Time to first click: <span>{{this.firstClickTime}} ms</span></li>
+                <li>Level time: <span>{{this.totalTimeForLevel}} ms</span></li>
+                <li>Average time per click: <span>{{this.averageClickTime}} ms</span></li>
+            </ul>
+        </td>
+    </tr>
+    {{/each}}
+</script>
 </body>
 </html>

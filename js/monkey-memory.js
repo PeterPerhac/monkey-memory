@@ -43,7 +43,7 @@ function addGameEvent(source, value) {
 function buttonClicked() {
     SOUND_TAP.play();
     if (currentLevel == levels.length - 1) {
-        showResultsPage();
+        showResultsPage(gameEvents);
     } else {
         gameStage = startLevel(currentLevel);
         renderer.render(gameStage);
@@ -232,14 +232,31 @@ function startLevel(lvl) {
     return createLevelScreen(lvl);
 }
 
-function showResultsPage() {
-    if (!gameEvents) {
+
+function showResultsPage(events) {
+    if (!events) {
         alert("No game events to analyse.");
         return;
     }
-    const stats = gameStats(gameEvents);
     document.body.removeChild(renderer.view);
     document.getElementById("results-table-div").style.display = 'block';
+    const gameStatistics = gameStats(events);
+    const score = calculateScore(gameStatistics);
+    document.getElementById("score").innerHTML = "" + ((score.correct / score.total) * 100).toFixed(1) + "% (" + score.correct + " of " + score.total + " correct)";
+    var templateScript = document.getElementById("result-row-template").innerHTML;
+    var template = Handlebars.compile(templateScript);
+    var compiledTemplate = template({stats: gameStatistics});
+    document.getElementById("result-rows-holder").innerHTML = compiledTemplate;
+
+    function calculateScore(stats) {
+        var s = {total: stats.length, correct: 0};
+        stats.forEach(function (e) {
+            if (e.ordered) {
+                s.correct = s.correct + 1;
+            }
+        });
+        return s;
+    }
 }
 
 /**
@@ -250,11 +267,10 @@ function showResultsPage() {
 function gameStats(events) {
     var stats = [];
     highland(events).group('level').toArray(function (groupedDataByLevels) {
-        var groupedData = groupedDataByLevels[0];
-        for (var lvl in groupedData) {
-            if (groupedData.hasOwnProperty(lvl)) {
-                var ls = {level: lvl, ordered: true, clickedOrder: []};
-                var levelData = groupedData[lvl]; //ret: array of events for each level
+        for (var lvl in groupedDataByLevels[0]) {
+            if (groupedDataByLevels[0].hasOwnProperty(lvl)) {
+                var ls = {level: Number(lvl) + 1, ordered: true, clickedOrder: []};
+                var levelData = groupedDataByLevels[0][lvl]; //ret: array of events for each level
                 var prevValue = 0;
                 levelData.forEach(function (event) {
                     const num = event.value;
@@ -266,7 +282,7 @@ function gameStats(events) {
                 const firstClick = levelData[0].timestamp;
                 ls.firstClickTime = levelData[1].timestamp - firstClick;
                 ls.totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
-                ls.averageClickTime = ls.totalTimeForLevel / (levelData.length - 1);
+                ls.averageClickTime = (ls.totalTimeForLevel / (levelData.length - 1)).toFixed(1);
                 stats.push(ls);
             }
         }
