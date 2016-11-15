@@ -1,12 +1,9 @@
 var renderer = PIXI.autoDetectRenderer();
-document.body.appendChild(renderer.view);
-
-// this works in conjunction with the * css style that sets all padding to 0
 renderer.view.style.position = "absolute";
 renderer.view.style.display = "block";
-
 renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.view);
 
 PIXI.loader
     .add("assets/sounds/level-done.wav")
@@ -51,7 +48,7 @@ function buttonClicked() {
         gameStage = startLevel(currentLevel);
         renderer.render(gameStage);
         //this goes LAST, so time taken to create and render the stage is not added to user's reaction time
-        addGameEvent("button", "");
+        addGameEvent("button", 0);
     }
 }
 

@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+<script src="js/highland.min.js"></script>
+<script type="text/javascript">
+    gameEvents = [
+        {"level": 0, "timestamp": 1479197602769, "source": "button", "value": 0},
+        {"level": 0, "timestamp": 1479197603721, "source": "number", "value": 2},
+        {"level": 0, "timestamp": 1479197604706, "source": "number", "value": 8},
+        {"level": 1, "timestamp": 1479197606388, "source": "button", "value": 0},
+        {"level": 1, "timestamp": 1479197607986, "source": "number", "value": 5},
+        {"level": 1, "timestamp": 1479197608690, "source": "number", "value": 7},
+        {"level": 1, "timestamp": 1479197609129, "source": "number", "value": 8},
+        {"level": 2, "timestamp": 1479197609989, "source": "button", "value": 0},
+        {"level": 2, "timestamp": 1479197611251, "source": "number", "value": 2},
+        {"level": 2, "timestamp": 1479197612059, "source": "number", "value": 4},
+        {"level": 2, "timestamp": 1479197612906, "source": "number", "value": 8},
+        {"level": 3, "timestamp": 1479197613998, "source": "button", "value": 0},
+        {"level": 3, "timestamp": 1479197615506, "source": "number", "value": 3},
+        {"level": 3, "timestamp": 1479197616275, "source": "number", "value": 4},
+        {"level": 3, "timestamp": 1479197616730, "source": "number", "value": 5},
+        {"level": 3, "timestamp": 1479197617459, "source": "number", "value": 8},
+        {"level": 4, "timestamp": 1479197618336, "source": "button", "value": 0},
+        {"level": 4, "timestamp": 1479197619779, "source": "number", "value": 3},
+        {"level": 4, "timestamp": 1479197620740, "source": "number", "value": 7},
+        {"level": 4, "timestamp": 1479197621443, "source": "number", "value": 8},
+        {"level": 4, "timestamp": 1479197621835, "source": "number", "value": 9},
+        {"level": 5, "timestamp": 1479197622637, "source": "button", "value": 0},
+        {"level": 5, "timestamp": 1479197623564, "source": "number", "value": 2},
+        {"level": 5, "timestamp": 1479197624404, "source": "number", "value": 3},
+        {"level": 5, "timestamp": 1479197625028, "source": "number", "value": 4},
+        {"level": 5, "timestamp": 1479197625732, "source": "number", "value": 7},
+        {"level": 5, "timestamp": 1479197626436, "source": "number", "value": 9},
+        {"level": 6, "timestamp": 1479197627023, "source": "button", "value": 0},
+        {"level": 6, "timestamp": 1479197628910, "source": "number", "value": 3},
+        {"level": 6, "timestamp": 1479197629781, "source": "number", "value": 4},
+        {"level": 6, "timestamp": 1479197630485, "source": "number", "value": 5},
+        {"level": 6, "timestamp": 1479197630893, "source": "number", "value": 6},
+        {"level": 6, "timestamp": 1479197631533, "source": "number", "value": 7},
+        {"level": 7, "timestamp": 1479197632830, "source": "button", "value": 0},
+        {"level": 7, "timestamp": 1479197633805, "source": "number", "value": 3},
+        {"level": 7, "timestamp": 1479197634750, "source": "number", "value": 5},
+        {"level": 8, "timestamp": 1479197635416, "source": "button", "value": 0},
+        {"level": 8, "timestamp": 1479197636854, "source": "number", "value": 4},
+        {"level": 8, "timestamp": 1479197637373, "source": "number", "value": 6},
+        {"level": 8, "timestamp": 1479197638126, "source": "number", "value": 9},
+        {"level": 9, "timestamp": 1479197638868, "source": "button", "value": 0},
+        {"level": 9, "timestamp": 1479197640094, "source": "number", "value": 1},
+        {"level": 9, "timestamp": 1479197640903, "source": "number", "value": 4},
+        {"level": 9, "timestamp": 1479197641582, "source": "number", "value": 5},
+        {"level": 10, "timestamp": 1479197642265, "source": "button", "value": 0},
+        {"level": 10, "timestamp": 1479197643303, "source": "number", "value": 1},
+        {"level": 10, "timestamp": 1479197643967, "source": "number", "value": 4},
+        {"level": 10, "timestamp": 1479197644472, "source": "number", "value": 6},
+        {"level": 10, "timestamp": 1479197645111, "source": "number", "value": 9},
+        {"level": 11, "timestamp": 1479197645849, "source": "button", "value": 0},
+        {"level": 11, "timestamp": 1479197647616, "source": "number", "value": 3},
+        {"level": 11, "timestamp": 1479197648168, "source": "number", "value": 4},
+        {"level": 11, "timestamp": 1479197648551, "source": "number", "value": 5},
+        {"level": 11, "timestamp": 1479197649288, "source": "number", "value": 6},
+        {"level": 12, "timestamp": 1479197649986, "source": "button", "value": 0},
+        {"level": 12, "timestamp": 1479197651528, "source": "number", "value": 1},
+        {"level": 12, "timestamp": 1479197652280, "source": "number", "value": 4},
+        {"level": 12, "timestamp": 1479197653073, "source": "number", "value": 7},
+        {"level": 12, "timestamp": 1479197654225, "source": "number", "value": 8},
+        {"level": 12, "timestamp": 1479197654984, "source": "number", "value": 9},
+        {"level": 13, "timestamp": 1479197655669, "source": "button", "value": 0},
+        {"level": 13, "timestamp": 1479197657377, "source": "number", "value": 1},
+        {"level": 13, "timestamp": 1479197658153, "source": "number", "value": 2},
+        {"level": 13, "timestamp": 1479197658633, "source": "number", "value": 3},
+        {"level": 13, "timestamp": 1479197659425, "source": "number", "value": 6},
+        {"level": 13, "timestamp": 1479197660169, "source": "number", "value": 9},
+        {"level": 14, "timestamp": 1479197660964, "source": "button", "value": 0},
+        {"level": 14, "timestamp": 1479197662393, "source": "number", "value": 2},
+        {"level": 14, "timestamp": 1479197663242, "source": "number", "value": 3},
+        {"level": 14, "timestamp": 1479197663978, "source": "number", "value": 4},
+        {"level": 14, "timestamp": 1479197664466, "source": "number", "value": 6},
+        {"level": 14, "timestamp": 1479197665234, "source": "number", "value": 7},
+        {"level": 14, "timestamp": 1479197666050, "source": "number", "value": 5},
+        {"level": 15, "timestamp": 1479197666550, "source": "button", "value": 0},
+        {"level": 15, "timestamp": 1479197668178, "source": "number", "value": 1},
+        {"level": 15, "timestamp": 1479197668921, "source": "number", "value": 2},
+        {"level": 15, "timestamp": 1479197669523, "source": "number", "value": 3},
+        {"level": 15, "timestamp": 1479197670571, "source": "number", "value": 4},
+        {"level": 15, "timestamp": 1479197671675, "source": "number", "value": 5},
+        {"level": 15, "timestamp": 1479197672475, "source": "number", "value": 6},
+        {"level": 15, "timestamp": 1479197673171, "source": "number", "value": 9},
+        {"level": 16, "timestamp": 1479197673835, "source": "button", "value": 0},
+        {"level": 16, "timestamp": 1479197675028, "source": "number", "value": 1},
+        {"level": 16, "timestamp": 1479197675820, "source": "number", "value": 2},
+        {"level": 16, "timestamp": 1479197676412, "source": "number", "value": 3},
+        {"level": 16, "timestamp": 1479197677332, "source": "number", "value": 4},
+        {"level": 16, "timestamp": 1479197678052, "source": "number", "value": 5},
+        {"level": 16, "timestamp": 1479197678612, "source": "number", "value": 6},
+        {"level": 16, "timestamp": 1479197679564, "source": "number", "value": 9},
+        {"level": 16, "timestamp": 1479197679980, "source": "number", "value": 7},
+        {"level": 17, "timestamp": 1479197680896, "source": "button", "value": 0},
+        {"level": 17, "timestamp": 1479197681933, "source": "number", "value": 1},
+        {"level": 17, "timestamp": 1479197682740, "source": "number", "value": 2},
+        {"level": 17, "timestamp": 1479197683156, "source": "number", "value": 7},
+        {"level": 17, "timestamp": 1479197684085, "source": "number", "value": 4},
+        {"level": 17, "timestamp": 1479197684804, "source": "number", "value": 6},
+        {"level": 17, "timestamp": 1479197685301, "source": "number", "value": 3},
+        {"level": 17, "timestamp": 1479197685820, "source": "number", "value": 5},
+        {"level": 17, "timestamp": 1479197686445, "source": "number", "value": 9},
+        {"level": 17, "timestamp": 1479197686861, "source": "number", "value": 8}
+    ];
+
+    var _ = highland;
+
+    function levelStats(events) {
+        var stats = [];
+        _(events).group('level').toArray(function (groupedDataByLevels) {
+            var groupedData = groupedDataByLevels[0];
+            for (var lvl in groupedData) {
+                var levelData = groupedData[lvl]; //ret: array of events for each level
+                var prevValue = 0;
+                var ordered = true;
+                levelData.forEach(function (event) {
+                    if (event.value == 0) return;
+                    ordered = ordered && event.value > prevValue;
+                    prevValue = event.value;
+                });
+                stats.push({level: lvl, ordered: ordered});
+            }
+        });
+        return stats;
+    }
+
+    var stats = levelStats(gameEvents);
+    stats;
+</script>
+</body>
+</html>
