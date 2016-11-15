@@ -37,40 +37,56 @@
             background-color: inherit;
             list-style-position: inside;
         }
+
+        #start-again-button {
+            display: block;
+            text-align: center;
+            width: 400px;
+            font-size: 48px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 75px;
+            border: 3px solid lime;
+            cursor: hand;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
-<table id="results-table-div">
+<a id="start-again-button" href="#" onclick="javascript:location.reload(); return false;">Start Again</a>
+
+<table>
     <thead>
     <tr>
         <th>Score</th>
         <th><span id="score">100%</span></th>
     </tr>
     </thead>
-    <tbody>
-    <tr class="levelRow">
-        <td class="levelLabel">Level 1</td>
-        <td class="levelDetails" style="background-color: #600000">
-            <span class="clicked">Clicked sequence: 5, 2</span>
-            <ul>
-                <li>Time to first click: <span class="firstClickTime">2300 ms</span></li>
-                <li>Level time: <span class="totalTime">2300 ms</span></li>
-                <li>Average time per click: <span class="averageClickTime">2300 ms</span></li>
-            </ul>
-        </td>
-    </tr>
+    <tbody id="result-rows-holder">
     </tbody>
 </table>
 
+<script src="js/highland.min.js"></script>
+<script src="js/handlebars.min-7535e48.js"></script>
 <script type="text/javascript">
 
     function showResultsPage(events) {
-        const score = calculateScore(gameStats(events));
+        const gameStatistics = gameStats(events);
+        const score = calculateScore(gameStatistics);
         document.getElementById("score").innerHTML = "" + ((score.correct / score.total) * 100).toFixed(1) + "% (" + score.correct + " of " + score.total + " correct)";
 
-        var rowPrototype = document.getElementsByClassName("levelRow")[0];
-//        document.getElementById("results-table-div").appendChild(rowPrototype.clone());
+        // Grab the template script
+        var theTemplateScript = document.getElementById("result-row-template").innerHTML;
+
+        // Compile the template
+        var theTemplate = Handlebars.compile(theTemplateScript);
+
+        // Pass our stats to the template
+        var theCompiledHtml = theTemplate({stats: gameStatistics});
+
+        // Add the compiled html to the page
+        document.getElementById("result-rows-holder").innerHTML = theCompiledHtml;
 
         function calculateScore(stats) {
             var s = {total: stats.length, correct: 0};
@@ -93,7 +109,7 @@
         highland(events).group('level').toArray(function (groupedDataByLevels) {
             for (var lvl in groupedDataByLevels[0]) {
                 if (groupedDataByLevels[0].hasOwnProperty(lvl)) {
-                    var ls = {level: lvl, ordered: true, clickedOrder: []};
+                    var ls = {level: Number(lvl) + 1, ordered: true, clickedOrder: []};
                     var levelData = groupedDataByLevels[0][lvl]; //ret: array of events for each level
                     var prevValue = 0;
                     levelData.forEach(function (event) {
@@ -106,7 +122,7 @@
                     const firstClick = levelData[0].timestamp;
                     ls.firstClickTime = levelData[1].timestamp - firstClick;
                     ls.totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
-                    ls.averageClickTime = ls.totalTimeForLevel / (levelData.length - 1);
+                    ls.averageClickTime = (ls.totalTimeForLevel / (levelData.length - 1)).toFixed(1);
                     stats.push(ls);
                 }
             }
@@ -115,8 +131,25 @@
     }
 
 </script>
-
-<script src="js/highland.min.js"></script>
+<script id="result-row-template" type="text/x-handlebars-template">
+    {{#each stats}}
+    <tr>
+        <td>Level {{this.level}}</td>
+        {{#if this.ordered}}
+        <td>
+            {{else}}
+        <td style="background-color: #600000">
+            {{/if}}
+            <span>Clicked sequence: {{this.clickedOrder}}</span>
+            <ul>
+                <li>Time to first click: <span>{{this.firstClickTime}} ms</span></li>
+                <li>Level time: <span>{{this.totalTimeForLevel}} ms</span></li>
+                <li>Average time per click: <span>{{this.averageClickTime}} ms</span></li>
+            </ul>
+        </td>
+    </tr>
+    {{/each}}
+</script>
 <script type="text/javascript">
     gameEvents = [
         {"level": 0, "timestamp": 1479197602769, "source": "button", "value": 0},
