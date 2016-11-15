@@ -54,7 +54,7 @@
 </head>
 <body>
 
-<a id="start-again-button" href="#" onclick="javascript:location.reload(); return false;">Start Again</a>
+<a id="start-again-button" href="#" onclick="location.reload(); return false;">Start Again</a>
 
 <table>
     <thead>
@@ -77,8 +77,7 @@
         document.getElementById("score").innerHTML = "" + ((score.correct / score.total) * 100).toFixed(1) + "% (" + score.correct + " of " + score.total + " correct)";
         var templateScript = document.getElementById("result-row-template").innerHTML;
         var template = Handlebars.compile(templateScript);
-        var compiledTemplate = template({stats: gameStatistics});
-        document.getElementById("result-rows-holder").innerHTML = compiledTemplate;
+        document.getElementById("result-rows-holder").innerHTML = template({stats: gameStatistics});
 
         function calculateScore(stats) {
             var s = {total: stats.length, correct: 0};
