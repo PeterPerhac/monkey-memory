@@ -108,29 +108,44 @@
         {"level": 17, "timestamp": 1479197686861, "source": "number", "value": 8}
     ];
 
-    var _ = highland;
-
-    function levelStats(events) {
+    function gameStats(events) {
         var stats = [];
-        _(events).group('level').toArray(function (groupedDataByLevels) {
+        highland(events).group('level').toArray(function (groupedDataByLevels) {
             var groupedData = groupedDataByLevels[0];
             for (var lvl in groupedData) {
-                var levelData = groupedData[lvl]; //ret: array of events for each level
-                var prevValue = 0;
-                var ordered = true;
-                levelData.forEach(function (event) {
-                    if (event.value == 0) return;
-                    ordered = ordered && event.value > prevValue;
-                    prevValue = event.value;
-                });
-                stats.push({level: lvl, ordered: ordered});
+                if (groupedData.hasOwnProperty(lvl)) {
+                    var levelData = groupedData[lvl]; //ret: array of events for each level
+                    var prevValue = 0;
+                    var ordered = true;
+                    var clickedOrder = [];
+
+                    levelData.forEach(function (event) {
+                        const num = event.value;
+                        if (num == 0) return;
+                        ordered = ordered && num > prevValue;
+                        prevValue = num;
+                        clickedOrder.push(num);
+                    });
+
+                    const firstClick = levelData[0].timestamp;
+                    const firstClickTime = levelData[1].timestamp - firstClick;
+                    const totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
+                    const averageClickTime = totalTimeForLevel / (levelData.length - 1);
+
+                    stats.push({
+                        level: lvl,
+                        ordered: ordered,
+                        clickedOrder: clickedOrder,
+                        firstClickTime: firstClickTime,
+                        averageClickTime: averageClickTime,
+                        totalTimeForLevel: totalTimeForLevel
+                    });
+                }
             }
         });
         return stats;
     }
 
-    var stats = levelStats(gameEvents);
-    stats;
 </script>
 </body>
 </html>

@@ -43,7 +43,7 @@ function addGameEvent(source, value) {
 function buttonClicked() {
     SOUND_TAP.play();
     if (currentLevel == levels.length - 1) {
-        // showResultsPage();
+        showResultsPage();
     } else {
         gameStage = startLevel(currentLevel);
         renderer.render(gameStage);
@@ -232,6 +232,60 @@ function startLevel(lvl) {
     return createLevelScreen(lvl);
 }
 
+function showResultsPage(){
+    if (!gameEvents) {
+        alert("No game events to analyse.");
+        return;
+    }
+    const stats = gameStats(gameEvents);
+    document.body.removeChild(renderer.view);
+    document.getElementById("results-table-div").style.display = 'block';
+}
+
+/**
+ * this is called with an array of game events to crunch the numbers to provide summary at the end of game
+ * @param events
+ * @returns {Array}
+ */
+function gameStats(events) {
+    var stats = [];
+    highland(events).group('level').toArray(function (groupedDataByLevels) {
+        var groupedData = groupedDataByLevels[0];
+        for (var lvl in groupedData) {
+            if (groupedData.hasOwnProperty(lvl)) {
+                var levelData = groupedData[lvl]; //ret: array of events for each level
+                var prevValue = 0;
+                var ordered = true;
+                var clickedOrder = [];
+
+                levelData.forEach(function (event) {
+                    const num = event.value;
+                    if (num == 0) return;
+                    ordered = ordered && num > prevValue;
+                    prevValue = num;
+                    clickedOrder.push(num);
+                });
+
+                const firstClick = levelData[0].timestamp;
+                const firstClickTime = levelData[1].timestamp - firstClick;
+                const totalTimeForLevel = levelData[levelData.length - 1].timestamp - firstClick;
+                const averageClickTime = totalTimeForLevel / (levelData.length - 1);
+
+                stats.push({
+                    level: lvl,
+                    ordered: ordered,
+                    clickedOrder: clickedOrder,
+                    firstClickTime: firstClickTime,
+                    averageClickTime: averageClickTime,
+                    totalTimeForLevel: totalTimeForLevel
+                });
+            }
+        }
+    });
+    return stats;
+}
+
+
 var buttons = [
     // 0 - start the whole thing
     {color: 0x00FF00, label: 'Start', radius: 100},
@@ -253,12 +307,12 @@ var levels = [
         message: "Click numbers in ascending order (low to high)",
         subMessage: "Timer starts as soon as you press the button above."
     },
-    {button: 1, numbers: 3, hidingNumbers: false},
-    {button: 1, numbers: 3, hidingNumbers: false},
-    {button: 1, numbers: 4, hidingNumbers: false},
-    {button: 1, numbers: 4, hidingNumbers: false},
-    {button: 1, numbers: 5, hidingNumbers: false},
-    {button: 1, numbers: 5, hidingNumbers: false},
+    // {button: 1, numbers: 3, hidingNumbers: false},
+    // {button: 1, numbers: 3, hidingNumbers: false},
+    // {button: 1, numbers: 4, hidingNumbers: false},
+    // {button: 1, numbers: 4, hidingNumbers: false},
+    // {button: 1, numbers: 5, hidingNumbers: false},
+    // {button: 1, numbers: 5, hidingNumbers: false},
     // {button: 1, numbers: 6, hidingNumbers: false},
     // {button: 1, numbers: 7, hidingNumbers: false},
     // {button: 1, numbers: 8, hidingNumbers: false},
@@ -270,16 +324,16 @@ var levels = [
         message: "Take a good look before tapping the first number",
         subMessage: "Numbers will be hidden after first click"
     },
-    {button: 3, numbers: 3, hidingNumbers: true},
-    {button: 3, numbers: 3, hidingNumbers: true},
-    {button: 3, numbers: 4, hidingNumbers: true},
-    {button: 3, numbers: 4, hidingNumbers: true},
-    {button: 3, numbers: 5, hidingNumbers: true},
-    {button: 3, numbers: 5, hidingNumbers: true},
-    {button: 3, numbers: 6, hidingNumbers: true},
-    {button: 3, numbers: 7, hidingNumbers: true},
-    {button: 3, numbers: 8, hidingNumbers: true},
-    {button: 3, numbers: 9, hidingNumbers: true},
+    // {button: 3, numbers: 3, hidingNumbers: true},
+    // {button: 3, numbers: 3, hidingNumbers: true},
+    // {button: 3, numbers: 4, hidingNumbers: true},
+    // {button: 3, numbers: 4, hidingNumbers: true},
+    // {button: 3, numbers: 5, hidingNumbers: true},
+    // {button: 3, numbers: 5, hidingNumbers: true},
+    // {button: 3, numbers: 6, hidingNumbers: true},
+    // {button: 3, numbers: 7, hidingNumbers: true},
+    // {button: 3, numbers: 8, hidingNumbers: true},
+    // {button: 3, numbers: 9, hidingNumbers: true},
     {
         button: 4,
         numbers: 0,
