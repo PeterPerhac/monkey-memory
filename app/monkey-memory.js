@@ -9,10 +9,10 @@ PIXI.loader
     .add("assets/sounds/level-done.wav")
     .add("assets/sounds/tap.wav")
     .load(function () {
+        setupPreLevel(0);
         SOUND_TAP.once('end', function () {
             SOUND_LEVEL_DONE.play();
         }).play();
-        setupPreLevel(0);
     });
 
 const SOUND_TAP = new Howl({
@@ -81,7 +81,6 @@ function numberClicked(event) {
  * @param lvl
  */
 function setupPreLevel(lvl) {
-
     function createButton(level) {
         var btnData = buttons[levels[level].button];
         var btn = new PIXI.Graphics();
@@ -132,17 +131,11 @@ function setupPreLevel(lvl) {
     renderer.render(createLevelStartPage(lvl));
 }
 
-
-/******************
- * This is used to start actual levels (where numbers are clicked)
- * @param lvl
- * @returns {*}
- */
+// I am really enjoying this waterfall here, do not judge!
 function startLevel(lvl) {
-
     function createLevelScreen(level) {
         function generateNumbers(numbers) {
-            function getRandomPosition(ps, tw, th) {
+            function getRandomPosition(ps, tw, th, rn) {
                 function validPos(p) {
                     function intersectRect(r1, r2) {
                         return !(
@@ -172,8 +165,7 @@ function startLevel(lvl) {
                     return valid;
                 }
 
-                recursionNo = recursionNo + 1;
-                if (recursionNo > 1000) {
+                if (rn > 1000) {
                     alert("Failed to calculate available position for number tiles! Try resizing the window.");
                     return;
                 }
@@ -181,16 +173,15 @@ function startLevel(lvl) {
                     x: Math.floor(Math.random() * (screen.w - tw)),
                     y: Math.floor(Math.random() * (screen.h - th))
                 };
-                return (validPos(pos)) ? pos : getRandomPosition(ps, tw, th);
+                return (validPos(pos)) ? pos : getRandomPosition(ps, tw, th, rn + 1);
             }
 
-            var recursionNo = 0;
             var a = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            var retArrd = [];
+            var retArrd = []; //a retarrd, get it?
             for (var i = 0; i < numbers; i++) {
                 var r = Math.floor(Math.random() * a.length);
                 var picked = a.splice(r, 1);
-                var randPos = getRandomPosition(retArrd, TILE_WIDTH, TILE_HEIGHT);
+                var randPos = getRandomPosition(retArrd, TILE_WIDTH, TILE_HEIGHT, 0);
                 retArrd.push({value: picked[0], x: randPos.x, y: randPos.y});
             }
             return retArrd;
@@ -289,7 +280,6 @@ function gameStats(events) {
     return stats;
 }
 
-
 var buttons = [
     // 0 - start the whole thing
     {color: 0x00FF00, label: 'Start', radius: 100},
@@ -301,48 +291,4 @@ var buttons = [
     {color: 0x00FFFF, label: 'Next', radius: 75},
     // 4 - end of game => show me the results
     {color: 0xFF00FF, label: 'Results', radius: 100}
-];
-
-var levels = [
-    {
-        button: 0,
-        numbers: 2,
-        hidingNumbers: false,
-        message: "Click numbers in ascending order (low to high)",
-        subMessage: "Timer starts as soon as you press the button above."
-    },
-    {button: 1, numbers: 3, hidingNumbers: false},
-    {button: 1, numbers: 3, hidingNumbers: false},
-    {button: 1, numbers: 4, hidingNumbers: false},
-    {button: 1, numbers: 4, hidingNumbers: false},
-    {button: 1, numbers: 5, hidingNumbers: false},
-    {button: 1, numbers: 5, hidingNumbers: false},
-    {button: 1, numbers: 6, hidingNumbers: false},
-    {button: 1, numbers: 7, hidingNumbers: false},
-    {button: 1, numbers: 8, hidingNumbers: false},
-    {button: 1, numbers: 9, hidingNumbers: false},
-    {
-        button: 2,
-        numbers: 2,
-        hidingNumbers: true,
-        message: "Take a good look before tapping the first number",
-        subMessage: "Numbers will be hidden after first click"
-    },
-    {button: 3, numbers: 3, hidingNumbers: true},
-    {button: 3, numbers: 3, hidingNumbers: true},
-    {button: 3, numbers: 4, hidingNumbers: true},
-    {button: 3, numbers: 4, hidingNumbers: true},
-    {button: 3, numbers: 5, hidingNumbers: true},
-    {button: 3, numbers: 5, hidingNumbers: true},
-    {button: 3, numbers: 6, hidingNumbers: true},
-    {button: 3, numbers: 7, hidingNumbers: true},
-    {button: 3, numbers: 8, hidingNumbers: true},
-    {button: 3, numbers: 9, hidingNumbers: true},
-    {
-        button: 4,
-        numbers: 0,
-        hidingNumbers: false,
-        message: "Well done.",
-        subMessage: "Press the button to review your results"
-    }
 ];
