@@ -3,56 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Monkey Memory</title>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            background-color: black;
-            color: lime;
-            font-family: monospace;
-            font-size: 24px;
-        }
-
-        table {
-            width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 100px;
-        }
-
-        table, tr, td, th {
-            border-collapse: collapse;
-            border: 1px solid lime;
-            padding: 10px;
-        }
-
-        th {
-            font-weight: bolder;
-            font-style: italic;
-        }
-
-        li, td span, li span {
-            font-size: 14px;
-        }
-
-        ul, li, table span, li span {
-            background-color: inherit;
-            list-style-position: inside;
-        }
-
-        #start-again-button {
-            display: block;
-            text-align: center;
-            width: 400px;
-            font-size: 48px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 75px;
-            border: 3px solid lime;
-            cursor: hand;
-            text-decoration: none;
-        }
-    </style>
+    <link href="assets/css/monkey-style.css" rel="stylesheet"/>
 </head>
 <body>
 
@@ -72,10 +23,10 @@
     </table>
 </div>
 
-<script src="js/pixi.min.js"></script>
-<script src="js/howler.min.js"></script>
-<script src="js/highland.min.js"></script>
-<script src="js/handlebars.min-7535e48.js"></script>
+<script src="assets/js/pixi.min.js"></script>
+<script src="assets/js/howler.min.js"></script>
+<script src="assets/js/highland.min.js"></script>
+<script src="assets/js/handlebars.min-7535e48.js"></script>
 <script src="app/monkey-memory-short.js"></script>
 <script id="result-row-template" type="text/x-handlebars-template">
     {{#each stats}}
