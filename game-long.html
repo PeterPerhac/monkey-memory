@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Monkey Memory</title>
-    <link href="assets/css/monkey-styles.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/monkey-styles-v2.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 
@@ -21,6 +21,12 @@
         <tbody id="result-rows-holder">
         </tbody>
     </table>
+
+
+    <div id="json-pane">
+        <a id="view-results-as-json" href="#" onclick="showJsonInPre(); return false;">View results as JSON</a>
+        <pre id="json-placeholder" style="display: none;"></pre>
+    </div>
 </div>
 
 <script src="assets/js/pixi.min.js"></script>
@@ -37,7 +43,7 @@
         {{#if this.ordered}}
         <td>
             {{else}}
-        <td style="background-color: #600000">
+        <td class="incorrect">
             {{/if}}
             <span>Clicked sequence: {{this.clickedOrder}}</span>
             <ul>

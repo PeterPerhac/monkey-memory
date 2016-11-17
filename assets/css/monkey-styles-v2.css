@@ -46,3 +46,18 @@ ul, li, table span, li span {
     cursor: hand;
     text-decoration: none;
 }
+
+.incorrect {
+    background-color: #700000
+}
+
+#json-pane {
+    width: 640px;
+    margin: 50px auto;
+}
+
+#json-pane pre {
+    max-width: 640px;
+    font-size: 10px;
+    margin-top: 20px;
+}

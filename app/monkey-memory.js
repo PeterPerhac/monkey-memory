@@ -5,16 +5,6 @@ renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.view);
 
-PIXI.loader
-    .add("assets/sounds/level-done.wav")
-    .add("assets/sounds/tap.wav")
-    .load(function () {
-        setupPreLevel(0);
-        SOUND_TAP.once('end', function () {
-            SOUND_LEVEL_DONE.play();
-        }).play();
-    });
-
 const SOUND_TAP = new Howl({
     src: ["assets/sounds/tap.wav"]
 });
@@ -37,7 +27,7 @@ var gameStage;
 var gameEvents = [];
 
 function addGameEvent(source, value) {
-    gameEvents.push({level: currentLevel, timestamp: new Date().getTime(), source: source, value: value});
+    gameEvents.push({level: currentLevel + 1, timestamp: new Date().getTime(), source: source, value: value});
 }
 
 function buttonClicked() {
@@ -75,11 +65,6 @@ function numberClicked(event) {
     }
 }
 
-
-/**
- * This is used to display the screen with a button just before playing a level
- * @param lvl
- */
 function setupPreLevel(lvl) {
     function createButton(level) {
         var btnData = buttons[levels[level].button];
@@ -106,11 +91,7 @@ function setupPreLevel(lvl) {
     }
 
     function createMessage(message, fontSize, yOffset) {
-        var messageStyle = {
-            fontFamily: "monospace",
-            fontSize: "" + fontSize + "px",
-            fill: "#00ff00"
-        };
+        var messageStyle = {fontFamily: "monospace", fontSize: "" + fontSize + "px", fill: "#00ff00"};
         var msg = new PIXI.Text(message, messageStyle);
         msg.anchor.x = 0.5;
         msg.anchor.y = 0.5;
@@ -138,27 +119,18 @@ function startLevel(lvl) {
             function getRandomPosition(ps, tw, th, rn) {
                 function validPos(p) {
                     function intersectRect(r1, r2) {
-                        return !(
-                            r2.left > r1.right ||
-                            r2.right < r1.left ||
-                            r2.top > r1.bottom ||
-                            r2.bottom < r1.top
-                        );
+                        return !( r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom || r2.bottom < r1.top );
                     }
 
                     var valid = true;
                     ps.forEach(function (e) {
                         var currentRect = {
-                            left: e.x - PADDING,
-                            right: e.x + tw + PADDING,
-                            top: e.y - PADDING,
-                            bottom: e.y + th + PADDING
+                            left: e.x - PADDING, right: e.x + tw + PADDING,
+                            top: e.y - PADDING, bottom: e.y + th + PADDING
                         };
                         var underTest = {
-                            left: p.x - PADDING,
-                            right: p.x + tw + PADDING,
-                            top: p.y - PADDING,
-                            bottom: p.y + th + PADDING
+                            left: p.x - PADDING, right: p.x + tw + PADDING,
+                            top: p.y - PADDING, bottom: p.y + th + PADDING
                         };
                         valid = valid && !intersectRect(underTest, currentRect)
                     });
@@ -196,11 +168,8 @@ function startLevel(lvl) {
             //noinspection JSUnresolvedFunction
             numberSprite.hitArea = new PIXI.Rectangle(r.x, r.y, r.w, r.h);
 
-            var buttonLabel = new PIXI.Text("" + no, {
-                fontFamily: "monospace",
-                fontSize: "" + NUMBER_FONT_SIZE + "px",
-                fill: "#00ff00"
-            });
+            var buttonLabel = new PIXI.Text("" + no,
+                {fontFamily: "monospace", fontSize: "" + NUMBER_FONT_SIZE + "px", fill: "#00ff00"});
             buttonLabel.x = r.x + NUMBER_X_OFFSET;
             buttonLabel.y = r.y + NUMBER_Y_OFFSET;
             numberSprite.addChild(buttonLabel);
@@ -223,7 +192,6 @@ function startLevel(lvl) {
     return createLevelScreen(lvl);
 }
 
-
 function showResultsPage(events) {
     if (!events) {
         alert("No game events to analyse.");
@@ -234,6 +202,12 @@ function showResultsPage(events) {
     const gameStatistics = gameStats(events);
     const score = calculateScore(gameStatistics);
     document.getElementById("score").innerHTML = "" + ((score.correct / score.total) * 100).toFixed(1) + "% (" + score.correct + " of " + score.total + " correct)";
+    var jp = document.getElementById('json-placeholder');
+    const exportObject = {
+        summary: gameStats(gameEvents),
+        gameEvents: gameEvents
+    };
+    jp.innerHTML = JSON.stringify(exportObject, null, 2);
     var templateScript = document.getElementById("result-row-template").innerHTML;
     var template = Handlebars.compile(templateScript);
     document.getElementById("result-rows-holder").innerHTML = template({stats: gameStatistics});
@@ -249,17 +223,12 @@ function showResultsPage(events) {
     }
 }
 
-/**
- * this is called with an array of game events to crunch the numbers to provide summary at the end of game
- * @param events
- * @returns {Array}
- */
 function gameStats(events) {
     var stats = [];
     highland(events).group('level').toArray(function (groupedDataByLevels) {
         for (var lvl in groupedDataByLevels[0]) {
             if (groupedDataByLevels[0].hasOwnProperty(lvl)) {
-                var ls = {level: Number(lvl) + 1, ordered: true, clickedOrder: []};
+                var ls = {level: lvl, ordered: true, clickedOrder: []};
                 var levelData = groupedDataByLevels[0][lvl]; //ret: array of events for each level
                 var prevValue = 0;
                 levelData.forEach(function (event) {
@@ -280,6 +249,17 @@ function gameStats(events) {
     return stats;
 }
 
+function showJsonInPre() {
+    var range = document.createRange();
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+
+    const jp = document.getElementById('json-placeholder');
+    jp.style.display = 'block';
+    range.selectNodeContents(jp);
+    selection.addRange(range);
+}
+
 var buttons = [
     // 0 - start the whole thing
     {color: 0x00FF00, label: 'Start', radius: 100},
@@ -292,3 +272,8 @@ var buttons = [
     // 4 - end of game => show me the results
     {color: 0xFF00FF, label: 'Results', radius: 100}
 ];
+
+setupPreLevel(0);
+SOUND_TAP.once('end', function () {
+    SOUND_LEVEL_DONE.play();
+}).play();

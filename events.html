@@ -67,8 +67,8 @@
     </tbody>
 </table>
 
-<script src="js/highland.min.js"></script>
-<script src="js/handlebars.min-7535e48.js"></script>
+<script src="assets/js/highland.min.js"></script>
+<script src="assets/js/handlebars.min-7535e48.js"></script>
 <script type="text/javascript">
 
     function showResultsPage(events) {
@@ -100,7 +100,7 @@
         highland(events).group('level').toArray(function (groupedDataByLevels) {
             for (var lvl in groupedDataByLevels[0]) {
                 if (groupedDataByLevels[0].hasOwnProperty(lvl)) {
-                    var ls = {level: Number(lvl) + 1, ordered: true, clickedOrder: []};
+                    var ls = {level: lvl, ordered: true, clickedOrder: []};
                     var levelData = groupedDataByLevels[0][lvl]; //ret: array of events for each level
                     var prevValue = 0;
                     levelData.forEach(function (event) {
