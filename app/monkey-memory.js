@@ -5,13 +5,6 @@ renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.view);
 
-const SOUND_TAP = new Howl({
-    src: ["assets/sounds/tap.wav"]
-});
-const SOUND_LEVEL_DONE = new Howl({
-    src: ['assets/sounds/level-done.wav']
-});
-
 const screen = {w: renderer.width, h: renderer.height};
 const center = {x: (screen.w / 2), y: (screen.h / 2)};
 const TILE_WIDTH = 120;
@@ -31,7 +24,6 @@ function addGameEvent(source, value) {
 }
 
 function buttonClicked() {
-    SOUND_TAP.play();
     if (currentLevel == levels.length - 1) {
         showResultsPage(gameEvents);
     } else {
@@ -53,10 +45,8 @@ function numberClicked(event) {
     addGameEvent("number", event.target['numberValue']);
     numbersLeft = numbersLeft - 1;
     if (numbersLeft == 0) {
-        SOUND_LEVEL_DONE.play();
         setupPreLevel(currentLevel + 1);
     } else {
-        SOUND_TAP.play();
         gameStage.removeChild(event.target);
         if (levels[currentLevel].hidingNumbers) {
             cloakNumbers();
@@ -274,6 +264,3 @@ var buttons = [
 ];
 
 setupPreLevel(0);
-SOUND_TAP.once('end', function () {
-    SOUND_LEVEL_DONE.play();
-}).play();
