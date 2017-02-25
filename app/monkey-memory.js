@@ -81,12 +81,14 @@ function setupPreLevel(lvl) {
         var buttonLabel = new PIXI.Text(btnData.label, {fontFamily: "monospace", fontSize: "24px", fill: "#00ff00"});
         buttonLabel.anchor.x = 0.5;
         buttonLabel.anchor.y = 0.5;
-
         btn.position.x = center.x;
         btn.position.y = center.y;
         btn.addChild(buttonLabel);
-        btn.on('click', buttonClicked);
-        btn.on('tap', buttonClicked);
+        btn.interactive = true;
+        // Shows hand cursor
+        btn.buttonMode = true;
+        // Pointers normalize touch and mouse
+        btn.on('pointerdown', buttonClicked);
         return btn;
     }
 
@@ -173,9 +175,11 @@ function startLevel(lvl) {
             buttonLabel.x = r.x + NUMBER_X_OFFSET;
             buttonLabel.y = r.y + NUMBER_Y_OFFSET;
             numberSprite.addChild(buttonLabel);
-
-            numberSprite.on('click', numberClicked);
-            numberSprite.on('tap', numberClicked);
+            numberSprite.interactive = true;
+            // Shows hand cursor
+            numberSprite.buttonMode = true;
+            // Pointers normalize touch and mouse
+            numberSprite.on('pointerdown', numberClicked);
             numberSprite['numberValue'] = no;
             return numberSprite;
         }
